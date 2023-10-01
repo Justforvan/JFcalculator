@@ -244,22 +244,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
                     // Iterate through the list starting from the second element
                     for (int i = 1; i < numberIncalc.length; i += 2) {
-                      String operator = numberIncalc[i];
+                      dynamic operator = numberIncalc[i];
                       dynamic nextNumber = numberIncalc[i + 1];
 
-                      switch (nextNumber) {
+                      switch (operator) {
                         case '+':
-                          result += operator;
+                          result += nextNumber;
                           break;
                         case '-':
-                          result -= operator;
+                          result -= nextNumber;
                           break;
                         case 'x':
-                          result *= operator;
+                          result *= nextNumber;
                           break;
                         case '/':
                           if (nextNumber != 0) {
-                            result /= operator;
+                            result /= nextNumber;
                           } else {
                             screenText = "Error: Division by zero";
                             return;
