@@ -10,9 +10,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Calculator App',
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey,
+        primarySwatch: Colors.lightBlue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: const MyHomePage(),
@@ -28,7 +28,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String screenText = '0';
+  dynamic screenText = '0';
 
   @override
   Widget build(BuildContext context) {
@@ -68,8 +68,11 @@ class _MyHomePageState extends State<MyHomePage> {
               CalculatorButton(
                 backgroundColor: Theme.of(context).primaryColorLight,
                 foregroundColor: Theme.of(context).primaryColorDark,
-                text: '+/-',
+                text: const Icon(Icons.delete),
                 onTap: () {
+                  setState(() {
+                    screenText = '$screenText+';
+                  });
                   // TODO
                 },
               ),
@@ -78,6 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorDark,
                 text: '%',
                 onTap: () {
+                  setState(() {
+                    screenText = (screenText+0.01);
+                  });
                   // TODO
                 },
               ),
@@ -249,19 +255,26 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
+
+//still working on fixin it
+//ignore: must_be_immutable
 class CalculatorButton extends StatelessWidget {
   final Color backgroundColor;
   final Color foregroundColor;
   IconData? icon;
-  final String text;
-  final void Function() onTap;
+  final dynamic text;
+  final void Function()? onTap;
+  final void Function()? onDoubleTap;
+  final void Function()? onLongPress;
 
   CalculatorButton({
     Key? key,
     required this.backgroundColor,
     required this.foregroundColor,
     required this.text,
-    required this.onTap,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress
   }) : super(key: key);
 
   CalculatorButton.icon({
@@ -270,13 +283,17 @@ class CalculatorButton extends StatelessWidget {
     required this.foregroundColor,
     this.icon,
     required this.text,
-    required this.onTap,
+    this.onTap,
+    this.onDoubleTap,
+    this.onLongPress
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      onDoubleTap: onDoubleTap,
+      onLongPress: onLongPress,
       child: Container(
         color: backgroundColor,
         child: Center(
