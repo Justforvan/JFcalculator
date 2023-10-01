@@ -229,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorDark,
                 text: '=',
                 onTap: () {
-                  final List numberIncalc = [];
+                  List numberIncalc = [];
                   numberIncalc.add(screenText);
                   dynamic result = numberIncalc[0];
                   if (numberIncalc.isEmpty) {
@@ -239,13 +239,21 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
 
                   try {
+                    dynamic operator;
+                    dynamic nextNumber;
                     // Initialize the result with the first number in the list
-
 
                     // Iterate through the list starting from the second element
                     for (int i = 1; i < numberIncalc.length; i += 2) {
-                      dynamic operator = numberIncalc[i];
-                      dynamic nextNumber = numberIncalc[i + 1];
+                      if (numberIncalc[i] == '+' ||
+                          numberIncalc[i] == '-' ||
+                          numberIncalc[i] == '*' ||
+                          numberIncalc[i] == '/' ||
+                          numberIncalc[i] == 'x') {
+                        operator = numberIncalc[i];
+                      } else {
+                        nextNumber = numberIncalc[i + 1];
+                      }
 
                       switch (operator) {
                         case '+':
