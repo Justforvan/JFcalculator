@@ -287,10 +287,11 @@ class _MyHomePageState extends State<MyHomePage> {
                           screenText = "Error: Invalid operator";
                           return;
                       }
+                      screenText = result;
                     }
 
                     // Set the result on the screen
-                    screenText = result;
+
                     print(result);
                   } catch (e) {
                     // Handle any other errors
