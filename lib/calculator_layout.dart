@@ -273,7 +273,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
 
                     // Set the result on the screen
-
                     print(result);
                   } catch (e) {
                     // Handle any other errors
