@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: '=',
                 onTap: () {
                   final List numberIncalc = [];
-
+                  numberIncalc.add(screenText);
                   if (numberIncalc.isEmpty) {
                     // Handle an empty list
                     screenText = "Error: No input";
@@ -272,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         case '-':
                           result -= nextNumber;
                           break;
-                        case '*':
+                        case 'x':
                           result *= nextNumber;
                           break;
                         case '/':
@@ -290,7 +290,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     }
 
                     // Set the result on the screen
-                    screenText = result.toString();
+                    screenText = result;
+                    print(result);
                   } catch (e) {
                     // Handle any other errors
                     screenText = "Error: Invalid input";
