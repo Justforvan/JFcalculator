@@ -1,4 +1,3 @@
-import 'package:calculator_flutter/collections.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -222,7 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     screenText = '$screenText - ';
                   });
-                  // TODO
                 },
               ),
               CalculatorButton(
@@ -250,54 +248,53 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorDark,
                 text: '=',
                 onTap: () {
+                  final List numberIncalc = [];
+
                   if (numberIncalc.isEmpty) {
                     // Handle an empty list
-                    screenText = "Error";
+                    screenText = "Error: No input";
                     return;
                   }
 
-                  // Initialize the result with the first number in the list
-                  dynamic result = numberIncalc[0];
-                  bool isOperator(String str) {
-                    return ['+', '-', '*', 'x', '/'].contains(str);
-                  }
-                  // Iterate through the list starting from the second element
-                  for (int i = 1; i < numberIncalc.length; i++) {
-                    dynamic element = numberIncalc[i];
+                  try {
+                    // Initialize the result with the first number in the list
+                    dynamic result = numberIncalc[0];
 
-                    // Check if the element is an operator (+, -, *, /, etc.)
-                    if (element is String && isOperator(element)) {
-                      // Handle the operator
-                      switch (element) {
+                    // Iterate through the list starting from the second element
+                    for (int i = 1; i < numberIncalc.length; i += 2) {
+                      String operator = numberIncalc[i];
+                      dynamic nextNumber = numberIncalc[i + 1];
+
+                      switch (operator) {
                         case '+':
-                          result += numberIncalc[i + 1];
+                          result += nextNumber;
                           break;
                         case '-':
-                          result -= numberIncalc[i + 1];
+                          result -= nextNumber;
                           break;
-                        case 'x':
-                          result *= numberIncalc[i + 1];
+                        case '*':
+                          result *= nextNumber;
                           break;
                         case '/':
-                          if (numberIncalc[i + 1] != 0) {
-                            result /= numberIncalc[i + 1];
+                          if (nextNumber != 0) {
+                            result /= nextNumber;
                           } else {
                             screenText = "Error: Division by zero";
                             return;
                           }
                           break;
+                        default:
+                          screenText = "Error: Invalid operator";
+                          return;
                       }
-
-                      // Skip the next number since we've already used it in the operation
-                      i++;
-                    } else {
-                      screenText = "Error: Invalid input";
-                      return;
                     }
-                  }
 
-                  // Set the result on the screen
-                  screenText = result.toString();
+                    // Set the result on the screen
+                    screenText = result.toString();
+                  } catch (e) {
+                    // Handle any other errors
+                    screenText = "Error: Invalid input";
+                  }
                 },
               ),
               CalculatorButton(
@@ -308,7 +305,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   setState(() {
                     screenText = '$screenText + ';
                   });
-                  // TODO
                 },
               ),
             ],
