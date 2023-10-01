@@ -231,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                   final List numberIncalc = [];
                   numberIncalc.add(screenText);
+                  dynamic result = numberIncalc[0];
                   if (numberIncalc.isEmpty) {
                     // Handle an empty list
                     screenText = "Error: No input";
@@ -239,26 +240,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
                   try {
                     // Initialize the result with the first number in the list
-                    dynamic result = numberIncalc[0];
+
 
                     // Iterate through the list starting from the second element
                     for (int i = 1; i < numberIncalc.length; i += 2) {
                       String operator = numberIncalc[i];
                       dynamic nextNumber = numberIncalc[i + 1];
 
-                      switch (operator) {
+                      switch (nextNumber) {
                         case '+':
-                          result += nextNumber;
+                          result += operator;
                           break;
                         case '-':
-                          result -= nextNumber;
+                          result -= operator;
                           break;
                         case 'x':
-                          result *= nextNumber;
+                          result *= operator;
                           break;
                         case '/':
                           if (nextNumber != 0) {
-                            result /= nextNumber;
+                            result /= operator;
                           } else {
                             screenText = "Error: Division by zero";
                             return;
