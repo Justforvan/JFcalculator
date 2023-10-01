@@ -1,3 +1,4 @@
+import 'package:calculator_flutter/collections.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -68,12 +69,29 @@ class _MyHomePageState extends State<MyHomePage> {
               CalculatorButton(
                 backgroundColor: Theme.of(context).primaryColorLight,
                 foregroundColor: Theme.of(context).primaryColorDark,
-                text: const Icon(Icons.delete),
+                text: '( )',
+                onDoubleTap: () {
+                  setState(() {
+                    if (!screenText.contains('(')) {
+                      screenText = '$screenText ( ';
+                    } else {
+                      screenText = '$screenText ) ';
+                    }
+                  });
+                },
+                onLongPress: () {
+                  setState(() {
+                    if (!screenText.contains('(')) {
+                      screenText = '$screenText ( ';
+                    } else {
+                      screenText = '$screenText ) ';
+                    }
+                  });
+                },
                 onTap: () {
                   setState(() {
-                    screenText = '$screenText+';
+                    screenText = '$screenText ( ';
                   });
-                  // TODO
                 },
               ),
               CalculatorButton(
@@ -82,9 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: '%',
                 onTap: () {
                   setState(() {
-                    screenText = (screenText+0.01);
+                    screenText = screenText * 0.01;
                   });
-                  // TODO
                 },
               ),
               CalculatorButton.icon(
@@ -134,7 +151,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorLight,
                 text: '/',
                 onTap: () {
-                  // TODO
+                  setState(() {
+                    screenText = '$screenText / ';
+                  });
                 },
               ),
               CalculatorButton(
@@ -166,7 +185,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorLight,
                 text: 'x',
                 onTap: () {
-                  // TODO
+                  setState(() {
+                    screenText = '$screenText x ';
+                  });
                 },
               ),
               CalculatorButton(
@@ -198,6 +219,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorLight,
                 text: '-',
                 onTap: () {
+                  setState(() {
+                    screenText = '$screenText - ';
+                  });
                   // TODO
                 },
               ),
@@ -226,7 +250,54 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorDark,
                 text: '=',
                 onTap: () {
-                  // TODO
+                  if (numberIncalc.isEmpty) {
+                    // Handle an empty list
+                    screenText = "Error";
+                    return;
+                  }
+
+                  // Initialize the result with the first number in the list
+                  dynamic result = numberIncalc[0];
+                  bool isOperator(String str) {
+                    return ['+', '-', '*', 'x', '/'].contains(str);
+                  }
+                  // Iterate through the list starting from the second element
+                  for (int i = 1; i < numberIncalc.length; i++) {
+                    dynamic element = numberIncalc[i];
+
+                    // Check if the element is an operator (+, -, *, /, etc.)
+                    if (element is String && isOperator(element)) {
+                      // Handle the operator
+                      switch (element) {
+                        case '+':
+                          result += numberIncalc[i + 1];
+                          break;
+                        case '-':
+                          result -= numberIncalc[i + 1];
+                          break;
+                        case 'x':
+                          result *= numberIncalc[i + 1];
+                          break;
+                        case '/':
+                          if (numberIncalc[i + 1] != 0) {
+                            result /= numberIncalc[i + 1];
+                          } else {
+                            screenText = "Error: Division by zero";
+                            return;
+                          }
+                          break;
+                      }
+
+                      // Skip the next number since we've already used it in the operation
+                      i++;
+                    } else {
+                      screenText = "Error: Invalid input";
+                      return;
+                    }
+                  }
+
+                  // Set the result on the screen
+                  screenText = result.toString();
                 },
               ),
               CalculatorButton(
@@ -234,6 +305,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorLight,
                 text: '+',
                 onTap: () {
+                  setState(() {
+                    screenText = '$screenText + ';
+                  });
                   // TODO
                 },
               ),
@@ -255,7 +329,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-
 //still working on fixin it
 //ignore: must_be_immutable
 class CalculatorButton extends StatelessWidget {
@@ -267,26 +340,26 @@ class CalculatorButton extends StatelessWidget {
   final void Function()? onDoubleTap;
   final void Function()? onLongPress;
 
-  CalculatorButton({
-    Key? key,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    required this.text,
-    this.onTap,
-    this.onDoubleTap,
-    this.onLongPress
-  }) : super(key: key);
+  CalculatorButton(
+      {Key? key,
+      required this.backgroundColor,
+      required this.foregroundColor,
+      required this.text,
+      this.onTap,
+      this.onDoubleTap,
+      this.onLongPress})
+      : super(key: key);
 
-  CalculatorButton.icon({
-    Key? key,
-    required this.backgroundColor,
-    required this.foregroundColor,
-    this.icon,
-    required this.text,
-    this.onTap,
-    this.onDoubleTap,
-    this.onLongPress
-  }) : super(key: key);
+  CalculatorButton.icon(
+      {Key? key,
+      required this.backgroundColor,
+      required this.foregroundColor,
+      this.icon,
+      required this.text,
+      this.onTap,
+      this.onDoubleTap,
+      this.onLongPress})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -299,16 +372,16 @@ class CalculatorButton extends StatelessWidget {
         child: Center(
           child: icon == null
               ? Text(
-            text,
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium!
-                .copyWith(color: foregroundColor),
-          )
+                  text,
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineMedium!
+                      .copyWith(color: foregroundColor),
+                )
               : Icon(
-            icon,
-            color: foregroundColor,
-          ),
+                  icon,
+                  color: foregroundColor,
+                ),
         ),
       ),
     );
