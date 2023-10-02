@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:calculator_flutter/calculator_button_function.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -166,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: 'x',
                 onTap: () {
                   setState(() {
-                    screenText = '$screenText x ';
+                    screenText = '$screenText * ';
                   });
                 },
               ),
@@ -229,55 +230,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 foregroundColor: Theme.of(context).primaryColorDark,
                 text: '=',
                 onTap: () {
-                  List numberIncalc = [];
-                  numberIncalc.add(screenText);
-                  num result = num.parse(numberIncalc[0]);
-                  if (numberIncalc.isEmpty) {
-                    // Handle an empty list
-                    screenText = "Error: No input";
-                    return;
-                  }
-
                   try {
-                    dynamic operator;
-                    num nextNumber = 0;
-                    // Initialize the result with the first number in the list
-
-                    // Iterate through the list starting from the second element
-                    for (int i = 1; i < numberIncalc.length; i += 2) {
-                      operator = numberIncalc[i];
-                      nextNumber = num.parse(numberIncalc[i+1]);
-
-                      switch (operator) {
-                        case '+':
-                          result += nextNumber;
-                          break;
-                        case '-':
-                          result -= nextNumber;
-                          break;
-                        case 'x':
-                          result *= nextNumber;
-                          break;
-                        case '/':
-                          if (nextNumber != 0) {
-                            result /= nextNumber;
-                          } else {
-                            screenText = "Error: Division by zero";
-                            return;
-                          }
-                          break;
-                        default:
-                          screenText = "Error: Invalid operator";
-                          return;
-                      }
-                      screenText = result;
-                    }
-
-                    // Set the result on the screen
-                    print(result);
+                    Parser p = Parser();
+                    Expression exp = p.parse(screenText);
+                    ContextModel cm = ContextModel();
+                    double eval = exp.evaluate(EvaluationType.REAL, cm);
+                    setState(() {
+                      screenText = eval.toString();
+                    });
                   } catch (e) {
-                    // Handle any other errors
-                    screenText = "Error: Invalid input";
+                    // Handle the case when the expression is not valid
+                    setState(() {
+                      screenText = 'Error: ${e.toString()}';
+                    });
                   }
                 },
               ),
