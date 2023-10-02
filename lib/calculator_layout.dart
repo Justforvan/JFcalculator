@@ -239,7 +239,6 @@ class _MyHomePageState extends State<MyHomePage> {
                       screenText = eval.toString();
                     });
                   } catch (e) {
-                    // Handle the case when the expression is not valid
                     setState(() {
                       screenText = 'Error: ${e.toString()}';
                     });
